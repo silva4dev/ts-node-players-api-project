@@ -16,19 +16,22 @@ interface LoadPlayerDataRepo {
 
 class LoadPlayerDataRepoSpy implements LoadPlayerDataRepo {
   id?: string
+  callsCount: number = 0
 
   async loadData (id: string): Promise<void> {
     this.id = id
+    this.callsCount++
   }
 }
 
 describe('CalculatePower Use Case', () => {
   it('should call LoadPlayerDataRepo correctly', async () => {
     const loadPlayerDataRepo = new LoadPlayerDataRepoSpy()
-    const calculatePower = new CalculatePower(loadPlayerDataRepo)
+    const sut = new CalculatePower(loadPlayerDataRepo)
 
-    await calculatePower.calculate('any_id')
+    await sut.calculate('any_id')
 
     expect(loadPlayerDataRepo.id).toBe('any_id')
+    expect(loadPlayerDataRepo.callsCount).toBe(1)
   })
 })
